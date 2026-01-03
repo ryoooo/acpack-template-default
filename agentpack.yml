@@ -1,20 +1,29 @@
+# agentpack.yml - Single source of truth for Claude Code / Codex CLI configuration
+# Run `agentpack generate --write` to regenerate CLAUDE.md, AGENTS.md, and MCP configs
+
 version: "1"
 
+# Project metadata (appears in generated CLAUDE.md/AGENTS.md)
 project:
   name: "my-project"
   description: "Project description"
 
+# Active stack (must match a key in stacks section)
 stack: python
 
+# Stack definitions with commands for each development task
+# Commands are included in generated CLAUDE.md/AGENTS.md
 stacks:
   python:
+    # Auto-detect: if any of these files exist, this stack is detected
     detect:
       any: ["pyproject.toml", "requirements.txt"]
-    deps: "uv sync"
-    lint: "uv run ruff check ."
-    typecheck: "uv run ty check"
-    test: "uv run pytest"
-    run: "uv run python main.py"
+    # Development commands (using uv for modern Python workflow)
+    deps: "uv sync"                    # Install dependencies
+    lint: "uv run ruff check ."        # Lint with Ruff
+    typecheck: "uv run ty check"       # Type check with ty
+    test: "uv run pytest"              # Run tests
+    run: "uv run python main.py"       # Run the application
 
   node:
     detect:
@@ -25,26 +34,43 @@ stacks:
     test: "npm test"
     run: "npm start"
 
+# MCP (Model Context Protocol) server configuration
+# Generates .claude/settings.json (Claude Code) and codex.config.toml (Codex CLI)
 mcp:
   servers:
+    # Ref - Documentation search MCP server
+    # Get API key at: https://ref.tools
     Ref:
       transport: http
       url: "https://api.ref.tools/mcp"
       env:
         X_REF_API_KEY: "${env:X_REF_API_KEY}"
 
+    # Example: Memory MCP server (stdio transport)
+    # memory:
+    #   transport: stdio
+    #   command: ["npx", "@anthropic/mcp-memory"]
+    #   env:
+    #     MEMORY_PATH: "${workspaceFolder}/.memory"
+
+# Development workflows (multi-step commands)
 workflows:
   - name: "Development Flow"
     steps:
       - "uv run ruff format . && uv run ruff check ."
       - "uv run pytest"
 
+# Pre-commit hooks (tools to run on git commit)
 pre_commit: ["prettier", "ruff", "ty"]
 
+# Safety rules for AI assistants
+# preset: default includes secrets禁止, dry-run first for destructive ops
 safety:
   preset: default
+  # custom:
+  #   - "Do not connect to production DB directly"
 
-# Custom content to append to CLAUDE.md/AGENTS.md
+# Custom content appended to CLAUDE.md/AGENTS.md
 # custom_content: |
 #   ## Quick Start
 #
