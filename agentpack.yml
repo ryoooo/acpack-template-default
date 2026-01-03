@@ -1,0 +1,58 @@
+version: "1"
+
+project:
+  name: "my-project"
+  description: "Project description"
+
+# Uncomment and configure the stack you're using
+# stack: python
+
+stacks:
+  python:
+    detect:
+      any: ["pyproject.toml", "requirements.txt"]
+    deps: "uv sync"
+    lint: "uv run ruff check ."
+    typecheck: "uv run ty check"
+    test: "uv run pytest"
+    run: "uv run python main.py"
+
+  node:
+    detect:
+      any: ["package.json"]
+    deps: "npm install"
+    lint: "npm run lint"
+    typecheck: "npm run typecheck"
+    test: "npm test"
+    run: "npm start"
+
+# MCP server configuration
+# mcp:
+#   servers:
+#     memory:
+#       transport: stdio
+#       command: ["npx", "@anthropic/mcp-memory"]
+#       env:
+#         MEMORY_PATH: "${workspaceFolder}/.memory"
+
+# Development workflows
+# workflows:
+#   - name: "Development Flow"
+#     steps:
+#       - "lint"
+#       - "test"
+
+# Pre-commit hooks
+# pre_commit: ["prettier", "ruff"]
+
+# Safety rules
+safety:
+  preset: default
+
+# Custom content to append to CLAUDE.md/AGENTS.md
+# custom_content: |
+#   ## Quick Start
+#
+#   ```bash
+#   python main.py
+#   ```
