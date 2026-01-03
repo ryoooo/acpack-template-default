@@ -4,8 +4,7 @@ project:
   name: "my-project"
   description: "Project description"
 
-# Uncomment and configure the stack you're using
-# stack: python
+stack: python
 
 stacks:
   python:
@@ -26,26 +25,22 @@ stacks:
     test: "npm test"
     run: "npm start"
 
-# MCP server configuration
-# mcp:
-#   servers:
-#     memory:
-#       transport: stdio
-#       command: ["npx", "@anthropic/mcp-memory"]
-#       env:
-#         MEMORY_PATH: "${workspaceFolder}/.memory"
+mcp:
+  servers:
+    Ref:
+      transport: http
+      url: "https://api.ref.tools/mcp"
+      env:
+        X_REF_API_KEY: "${env:X_REF_API_KEY}"
 
-# Development workflows
-# workflows:
-#   - name: "Development Flow"
-#     steps:
-#       - "lint"
-#       - "test"
+workflows:
+  - name: "Development Flow"
+    steps:
+      - "uv run ruff format . && uv run ruff check ."
+      - "uv run pytest"
 
-# Pre-commit hooks
-# pre_commit: ["prettier", "ruff"]
+pre_commit: ["prettier", "ruff", "ty"]
 
-# Safety rules
 safety:
   preset: default
 
