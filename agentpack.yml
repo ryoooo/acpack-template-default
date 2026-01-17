@@ -28,11 +28,12 @@ stacks:
   node:
     detect:
       any: ["package.json"]
-    deps: "npm install"
-    lint: "npm run lint"
-    typecheck: "npm run typecheck"
-    test: "npm test"
-    run: "npm start"
+    deps: "bun install"
+    lint: "bun biome check ."            # Biome: lint + format check
+    format: "bun biome format --write ." # フォーマット自動修正
+    typecheck: "bun tsc --noEmit"        # TypeScript型チェック
+    test: "bun test"                     # Bun組み込みテストランナー
+    run: "bun run start"
 
 # MCP (Model Context Protocol) server configuration
 # Generates .claude/settings.json (Claude Code) and codex.config.toml (Codex CLI)
